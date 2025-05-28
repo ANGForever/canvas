@@ -128,4 +128,412 @@
 
         <section id="what-is-mcp" class="py-8">
             <h2 class="section-title">模型上下文协议 (MCP) 解析</h2>
-            <div 
+            <div class="card">
+                <p class="text-lg mb-6 text-center">MCP 是一种开放协议，旨在标准化应用程序向大型语言模型 (LLM) 提供上下文和工具的方式，是构建统一智能设备控制中枢的关键。</p>
+                
+                <h3 class="text-2xl font-semibold text-dark-blue mb-4 text-center">MCP 核心组件交互</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 items-stretch">
+                    <div class="flow-box">MCP 主机 (如 SynHome Core)</div>
+                    <div class="flow-arrow right hidden sm:flex"></div>
+                    <div class="flow-box">MCP 客户端</div>
+                    <div class="flow-arrow right hidden lg:flex"></div>
+                    <div class="flow-box">MCP 服务器</div>
+                    <div class="flow-arrow right hidden sm:flex lg:hidden"></div>
+                    <div class="flow-box mt-4 sm:mt-0">工具 (Tools)</div>
+                    <div class="flow-arrow right hidden lg:flex"></div>
+                    <div class="flow-box mt-4 sm:mt-0">资源 (Resources)</div>
+                </div>
+                 <p class="text-center text-sm mb-6">上图展示了 MCP 生态中的主要参与者及其典型的交互关系。主机通过客户端与服务器通信，调用工具执行操作或访问资源获取信息。</p>
+
+
+                <h3 class="text-2xl font-semibold text-dark-blue mb-4 mt-8 text-center">MCP 传输机制</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-light-blue">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-dark-blue uppercase tracking-wider">传输机制</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-dark-blue uppercase tracking-wider">描述</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-dark-blue uppercase tracking-wider">SynHome Core优势</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-dark-blue uppercase tracking-wider">适用场景</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-medium">Stdio</td>
+                                <td class="px-6 py-4 whitespace-normal">通过标准输入/输出流通信</td>
+                                <td class="px-6 py-4 whitespace-normal">本地集成，低延迟</td>
+                                <td class="px-6 py-4 whitespace-normal">本地插件，直连硬件</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-medium">HTTP/SSE</td>
+                                <td class="px-6 py-4 whitespace-normal">HTTP POST 与服务器发送事件</td>
+                                <td class="px-6 py-4 whitespace-normal">广泛支持，远程通信</td>
+                                <td class="px-6 py-4 whitespace-normal">云服务，网络设备</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap font-medium">MCP over MQTT</td>
+                                <td class="px-6 py-4 whitespace-normal">基于 MQTT 的 MCP 实现</td>
+                                <td class="px-6 py-4 whitespace-normal">低带宽，不稳定网络</td>
+                                <td class="px-6 py-4 whitespace-normal">IoT设备，传感器网络</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="synhome-core-architecture" class="py-8">
+            <h2 class="section-title">SynHome Core：智能家居的编排大脑</h2>
+            <div class="card">
+                <p class="text-lg mb-6 text-center">SynHome Core 被设计为一个模块化的智能编排中心，负责理解用户意图、动态选择和调用合适的 MCP 服务，并处理与智能设备的复杂交互。</p>
+
+                <h3 class="text-2xl font-semibold text-dark-blue mb-4 text-center">SynHome Core 核心模块</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div class="p-4 bg-light-blue rounded-lg shadow">
+                        <h4 class="font-semibold text-dark-blue text-lg mb-1">请求处理与意图识别引擎</h4>
+                        <p class="text-sm">利用LLM解析用户请求，识别意图和参数。</p>
+                    </div>
+                    <div class="p-4 bg-light-blue rounded-lg shadow">
+                        <h4 class="font-semibold text-dark-blue text-lg mb-1">MCP服务发现与管理</h4>
+                        <p class="text-sm">维护MCP服务器及其能力的注册表。</p>
+                    </div>
+                    <div class="p-4 bg-light-blue rounded-lg shadow">
+                        <h4 class="font-semibold text-dark-blue text-lg mb-1">动态MCP工具路由/选择器</h4>
+                        <p class="text-sm">系统的“大脑”，智能选择合适的MCP工具。</p>
+                    </div>
+                    <div class="p-4 bg-light-blue rounded-lg shadow md:col-start-1">
+                        <h4 class="font-semibold text-dark-blue text-lg mb-1">MCP客户端交互层</h4>
+                        <p class="text-sm">与MCP服务器进行实际通信。</p>
+                    </div>
+                     <div class="p-4 bg-light-blue rounded-lg shadow">
+                        <h4 class="font-semibold text-dark-blue text-lg mb-1">设备抽象与控制接口 (可选)</h4>
+                        <p class="text-sm">集成非MCP设备或暴露自身能力。</p>
+                    </div>
+                    <div class="p-4 bg-light-blue rounded-lg shadow">
+                        <h4 class="font-semibold text-dark-blue text-lg mb-1">响应聚合与格式化引擎</h4>
+                        <p class="text-sm">聚合结果并按要求格式化输出。</p>
+                    </div>
+                </div>
+                
+                <h3 class="text-2xl font-semibold text-dark-blue my-6 text-center">用户请求到设备响应的交互流程</h3>
+                <div class="space-y-4">
+                    <div class="flow-box mx-auto max-w-md">1. 用户发出指令 (例如 "卧室灯调暗到30%")</div>
+                    <div class="flow-arrow"></div>
+                    <div class="flow-box mx-auto max-w-md">2. 请求处理引擎 (LLM) 解析意图与参数</div>
+                    <div class="flow-arrow"></div>
+                    <div class="flow-box mx-auto max-w-md">3. MCP 工具路由/选择器选择合适工具</div>
+                    <div class="flow-arrow"></div>
+                    <div class="flow-box mx-auto max-w-md">4. MCP 客户端交互层发送 `tools/call`</div>
+                    <div class="flow-arrow"></div>
+                    <div class="flow-box mx-auto max-w-md">5. MCP 服务器执行设备操作</div>
+                    <div class="flow-arrow"></div>
+                    <div class="flow-box mx-auto max-w-md">6. MCP 服务器返回结果</div>
+                    <div class="flow-arrow"></div>
+                    <div class="flow-box mx-auto max-w-md">7. 响应聚合引擎格式化并输出响应</div>
+                </div>
+                 <p class="text-center text-sm mt-6">此流程清晰地展示了 SynHome Core 如何处理用户请求并通过 MCP 与智能设备交互，最终完成用户指令并提供反馈。</p>
+            </div>
+        </section>
+
+        <section id="tools-llm-potential" class="py-8">
+            <h2 class="section-title">MCP 工具与 LLM：释放潜能</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-dark-blue mb-3 text-center">LLM 在 SynHome Core 中的功能占比</h3>
+                    <div class="chart-container h-72 md:h-80">
+                        <canvas id="llmFunctionsChart"></canvas>
+                    </div>
+                    <p class="text-sm text-center mt-2">此图表为概念演示，展示 LLM 在 SynHome Core 中各项核心智能功能（如自然语言理解、工具选择等）的贡献比例。</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-dark-blue mb-3 text-center">典型智能家居场景的 MCP 工具覆盖率</h3>
+                    <div class="chart-container h-72 md:h-80">
+                        <canvas id="mcpToolCoverageChart"></canvas>
+                    </div>
+                     <p class="text-sm text-center mt-2">此图表为概念演示，说明 MCP 工具旨在广泛覆盖各类智能家居控制场景，提升互操作性。</p>
+                </div>
+            </div>
+            <div class="card mt-8">
+                <h3 class="text-2xl font-semibold text-dark-blue mb-4 text-center">MCP 工具模式示例 (inputSchema)</h3>
+                <p class="mb-4">清晰的 MCP 工具 `inputSchema` (使用 JSON Schema 定义) 对于 LLM 准确理解和调用至关重要。以下为简化示例：</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-lg font-semibold text-medium-blue mb-2">灯光亮度设置</h4>
+                        <pre class="bg-slate-100 p-3 rounded text-sm overflow-x-auto"><code>{
+  "type": "object",
+  "properties": {
+    "device_id": {"type": "string"},
+    "brightness": {"type": "integer", "min":0, "max":100}
+  },
+  "required": ["device_id", "brightness"]
+}</code></pre>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-medium-blue mb-2">恒温器温度设置</h4>
+                        <pre class="bg-slate-100 p-3 rounded text-sm overflow-x-auto"><code>{
+  "type": "object",
+  "properties": {
+    "device_id": {"type": "string"},
+    "temperature": {"type": "number"},
+    "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]}
+  },
+  "required": ["device_id", "temperature"]
+}</code></pre>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm">这些模式中的 `description` 字段（未完全展示）对 LLM 理解工具功能和适用场景至关重要。通过标准化模式，SynHome Core 可以更智能地将用户自然语言请求映射到具体的设备操作。</p>
+            </div>
+        </section>
+
+        <section id="implementation-blueprint" class="py-8">
+            <h2 class="section-title">构建 SynHome Core：技术与蓝图</h2>
+            <div class="card">
+                 <p class="text-lg mb-6 text-center">SynHome Core 的成功构建依赖于合适的技术选型和清晰的开发路线图，以 Python 为核心，逐步实现各项智能功能。</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <div>
+                        <h3 class="text-2xl font-semibold text-dark-blue mb-4 text-center">核心技术栈</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-center p-3 bg-light-blue rounded-md shadow-sm">
+                                <span class="text-2xl mr-3">🐍</span> 
+                                <div><span class="font-semibold text-dark-blue">Python:</span> 项目核心编程语言。</div>
+                            </li>
+                            <li class="flex items-center p-3 bg-light-blue rounded-md shadow-sm">
+                                <span class="text-2xl mr-3">⚙️</span>
+                                <div><span class="font-semibold text-dark-blue">FastMCP:</span> 用于实现 MCP 客户端与服务器。</div>
+                            </li>
+                            <li class="flex items-center p-3 bg-light-blue rounded-md shadow-sm">
+                                <span class="text-2xl mr-3">🔗</span>
+                                <div><span class="font-semibold text-dark-blue">LangChain:</span> 构建LLM驱动应用的框架。</div>
+                            </li>
+                            <li class="flex items-center p-3 bg-light-blue rounded-md shadow-sm">
+                                <span class="text-2xl mr-3">🧠</span>
+                                <div><span class="font-semibold text-dark-blue">OpenAI API / 本地LLM:</span> 执行NLU和智能决策。</div>
+                            </li>
+                            <li class="flex items-center p-3 bg-light-blue rounded-md shadow-sm">
+                                <span class="text-2xl mr-3">⚡</span>
+                                <div><span class="font-semibold text-dark-blue">Asyncio:</span> 处理并发操作，提升性能。</div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-dark-blue mb-4 text-center">分阶段开发路线图</h3>
+                        <div class="space-y-4">
+                            <div class="p-3 border-l-4 border-accent rounded-r-md bg-white shadow">
+                                <h4 class="font-semibold text-medium-blue">阶段一：基础 MCP 客户端与基本工具调用</h4>
+                                <p class="text-sm">实现MCP通信链路，硬编码工具调用。</p>
+                            </div>
+                            <div class="p-3 border-l-4 border-accent rounded-r-md bg-white shadow">
+                                <h4 class="font-semibold text-medium-blue">阶段二：基于LLM的意图识别与静态工具映射</h4>
+                                <p class="text-sm">集成LLM进行NLU，实现简单意图到工具的映射。</p>
+                            </div>
+                            <div class="p-3 border-l-4 border-accent rounded-r-md bg-white shadow">
+                                <h4 class="font-semibold text-medium-blue">阶段三：动态MCP工具选择与编排</h4>
+                                <p class="text-sm">实现服务发现，动态选择MCP工具。</p>
+                            </div>
+                            <div class="p-3 border-l-4 border-accent rounded-r-md bg-white shadow">
+                                <h4 class="font-semibold text-medium-blue">阶段四：高级功能实现与优化</h4>
+                                <p class="text-sm">支持多步骤指令，复杂编排，提升鲁棒性。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="future-outlook" class="py-8">
+            <h2 class="section-title">未来展望：更智能的家居体验</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-dark-blue mb-3 text-center">SynHome Core 价值维度</h3>
+                    <div class="chart-container h-80 md:h-96">
+                        <canvas id="valueDimensionsChart"></canvas>
+                    </div>
+                    <p class="text-sm text-center mt-2">此图表为概念演示，展示 SynHome Core 在互操作性、智能化、可扩展性等关键维度的预期价值贡献。</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-dark-blue mb-4 text-center">潜在的未来增强方向</h3>
+                    <ul class="list-disc list-inside space-y-2 pl-4 text-dark-gray">
+                        <li><span class="font-semibold">SynHome Core 作为 MCP 服务器:</span> 暴露编排场景与聚合能力。</li>
+                        <li><span class="font-semibold">深化 MCP 资源应用:</span> 获取更丰富的上下文信息。</li>
+                        <li><span class="font-semibold">高级学习与个性化:</span> LLM动态调整行为，实现深度个性化。</li>
+                        <li><span class="font-semibold">集成多模态 LLM:</span> 支持图像、音频等更丰富的交互。</li>
+                        <li><span class="font-semibold">主动式智能与预测性维护:</span> 提供建议、预警问题、自动优化。</li>
+                        <li><span class="font-semibold">构建社区驱动生态:</span> 吸引开发者贡献，扩展设备支持。</li>
+                        <li><span class="font-semibold">强化伦理与隐私保护:</span> 尊重用户数据，确保决策透明。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-dark-blue text-slate-300 py-8 text-center">
+        <div class="container mx-auto px-4">
+            <p>&copy; 2025 SynHome Core MCP Infographic. 内容基于提供的研究报告生成。</p>
+            <p class="text-sm mt-1">未在此信息图中使用SVG或Mermaid JS。</p>
+            <p class="text-sm mt-1">颜色主题: Deep Tech Harmony (#0A2463, #3E89C7, #A3D5FF, #FFB703)。</p>
+        </div>
+    </footer>
+
+<script>
+    const CHART_COMMON_TOOLTIP_CALLBACKS = {
+        title: function(tooltipItems) {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+              return label.join(' ');
+            } else {
+              return label;
+            }
+        }
+    };
+
+    function wrapLabels(labels, maxLength = 16) {
+        return labels.map(label => {
+            if (typeof label === 'string' && label.length > maxLength) {
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                for (const word of words) {
+                    if ((currentLine + word).length > maxLength && currentLine.length > 0) {
+                        lines.push(currentLine.trim());
+                        currentLine = word + ' ';
+                    } else {
+                        currentLine += word + ' ';
+                    }
+                }
+                if (currentLine.trim().length > 0) {
+                    lines.push(currentLine.trim());
+                }
+                return lines.length > 0 ? lines : [label]; // Ensure it returns an array even if only one line
+            }
+            return label; // Return as is if not string or not too long
+        });
+    }
+
+    // Chart 1: Integration Complexity
+    const integrationComplexityCtx = document.getElementById('integrationComplexityChart').getContext('2d');
+    new Chart(integrationComplexityCtx, {
+        type: 'line',
+        data: {
+            labels: wrapLabels(['传统方式', '部分标准化', 'MCP 初期', 'MCP + SynHome Core', '未来生态成熟期']),
+            datasets: [{
+                label: '设备集成复杂度指数',
+                data: [100, 80, 60, 35, 15],
+                borderColor: '#3E89C7', // Medium Blue
+                backgroundColor: 'rgba(62, 137, 199, 0.1)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: '复杂度指数 (概念值)' }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: CHART_COMMON_TOOLTIP_CALLBACKS }
+            }
+        }
+    });
+
+    // Chart 2: LLM Functions
+    const llmFunctionsCtx = document.getElementById('llmFunctionsChart').getContext('2d');
+    new Chart(llmFunctionsCtx, {
+        type: 'doughnut',
+        data: {
+            labels: wrapLabels(['自然语言理解 (NLU)', 'MCP工具选择', '复杂任务编排', '智能响应生成']),
+            datasets: [{
+                label: 'LLM 功能占比',
+                data: [40, 30, 20, 10],
+                backgroundColor: ['#3E89C7', '#A3D5FF', '#0A2463', '#FFB703'], // Med Blue, Light Blue, Dark Blue, Accent
+                borderColor: '#F8FAFC',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: { callbacks: CHART_COMMON_TOOLTIP_CALLBACKS }
+            }
+        }
+    });
+
+    // Chart 3: MCP Tool Coverage
+    const mcpToolCoverageCtx = document.getElementById('mcpToolCoverageChart').getContext('2d');
+    new Chart(mcpToolCoverageCtx, {
+        type: 'bar',
+        data: {
+            labels: wrapLabels(['照明控制', '环境调节 (温控等)', '安防监控', '影音娱乐', '能源管理']),
+            datasets: [{
+                label: 'MCP 工具覆盖率 (%)',
+                data: [95, 90, 80, 75, 70],
+                backgroundColor: ['#3E89C7', '#A3D5FF', '#0A2463', '#89CFF0', '#FFB703'], // Added one more blue shade
+                borderColor: '#1E293B',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: { display: true, text: '覆盖率 (%) (概念值)' }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: CHART_COMMON_TOOLTIP_CALLBACKS }
+            }
+        }
+    });
+    
+    // Chart 4: Value Dimensions
+    const valueDimensionsCtx = document.getElementById('valueDimensionsChart').getContext('2d');
+    new Chart(valueDimensionsCtx, {
+        type: 'radar',
+        data: {
+            labels: wrapLabels(['互操作性', '智能化程度', '可扩展性', '用户体验', '开放性', '安全性']),
+            datasets: [{
+                label: 'SynHome Core 价值评估',
+                data: [90, 85, 80, 88, 92, 75], // Illustrative scores
+                backgroundColor: 'rgba(62, 137, 199, 0.2)', // Medium Blue transparent
+                borderColor: '#0A2463', // Dark Blue
+                pointBackgroundColor: '#0A2463',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#0A2463'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: { display: true },
+                    suggestedMin: 0,
+                    suggestedMax: 100,
+                    pointLabels: { font: { size: 10 } } // Smaller font for radial labels
+                }
+            },
+            plugins: {
+                legend: { position: 'top' },
+                tooltip: { callbacks: CHART_COMMON_TOOLTIP_CALLBACKS }
+            }
+        }
+    });
+
+</script>
+
+</body>
+</html>
+
